@@ -77,7 +77,21 @@
 		
 		///// YOUR CODE IS HERE /////
 		
-		
+		var power;
+		var sensitivity=0.1;
+		var amp_scale=100;
+		var decay_coef = 0.9;
+		power = root_mean_square(dataArray);
+		var current_level = amp_scale*Math.log(1.0+1.0/sensitivity*power)/Math.log(1.0+1.0/sensitivity);
+		if(current_level > amp_envelop) {
+
+			amp_envelop = current_level;
+		}
+		else {
+
+			amp_envelop *=decay_coef;
+		}
+
 		
 		
 		///////////////////////////
@@ -125,6 +139,14 @@
 	  if (source) {
 	    source.stop();
 	  }
+	}
+
+	////>> NEW FUNCTIONS
+
+	//rms from : http://rosettacode.org/wiki/Averages/Root_mean_square#JavaScript
+	function root_mean_square(ary) {
+    	var sum_of_squares = ary.reduce(function(s,x) {return (s + x*x)}, 0);
+    	return Math.sqrt(sum_of_squares / ary.length);
 	}	   	
 	</script>
 </body>
