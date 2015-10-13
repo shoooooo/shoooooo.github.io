@@ -78,9 +78,9 @@
 		///// YOUR CODE IS HERE /////
 		
 		var power;
-		var sensitivity=0.1;
-		var amp_scale=100;
-		var decay_coef = 0.9;
+		var sensitivity=0.15;
+		var amp_scale=200;
+		var decay_coef = 0.95;
 		power = root_mean_square(dataArray);
 		var current_level = amp_scale*Math.log(1.0+1.0/sensitivity*power)/Math.log(1.0+1.0/sensitivity);
 		if(current_level > amp_envelop) {
