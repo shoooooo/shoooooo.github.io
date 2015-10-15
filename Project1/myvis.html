@@ -27,6 +27,14 @@
 	
 	var amp_envelop = 0;
 
+	var PITCH_MIN = 36;
+	var PITCH_MAX = 108;
+	var PITCH_STEP = 1;
+	var pitch_range = [];
+	var pitch_range_hz = [];
+
+
+
 	//
 	window.onload=function(){
 		// file open button
@@ -44,8 +52,26 @@
 		// analyzer
 	    analyser = context.createAnalyser();
 	    analyser.fftSize = 256;
-		analyser.smoothingTimeConstant = 0;		
+		analyser.smoothingTimeConstant = 0;	
+
+		for (var pitch = PITCH_MIN; pitch <= PITCH_MAX; pitch = pitch + PITCH_STEP) 
+		{
+			pitch_range.push(pitch);
+			pitch_range_hz.push(midi2hertz(pitch))
+		}	
 	}
+	
+	function midi2hertz(midi) {
+		var hertz;
+		///// YOUR CODE IS HERE /////
+		
+		hertz = Math.pow(2,(midi-69)/12)*440;
+		
+		
+		/////////////////////////////
+		return hertz;
+	}	
+	
 	
 	function draw_wave(timestamp) {		
 		// 2d canvas context
@@ -62,7 +88,70 @@
 				
 		// get samples 
 		var dataArray = new Float32Array(analyser.frequencyBinCount);
+		var dataArray2 = new Float32Array(analyser.frequencyBincount);
 		analyser.getFloatTimeDomainData(dataArray);
+		analyser.getFloatFrequencyData(dataArray2);
+
+		var midi_power = new Float32Array(pitch_range_hz.length-1);
+		var maxindex;
+		var maxpower=0;
+		for (var i=0; i<midi_power.length; i++) {
+			var dataindex = Math.floor(pitch_range_hz[i] * analyser.frequencyBinCount/ context.sampleRate * 2 );
+			midi_power[i] =  db2pow(dataArray[dataindex]);
+			
+		}
+
+		var pitchcolor= new Float32Array(12);
+		for(var i=0; i<12; i++) {
+			pitchcolor[i]=midi_power[i]+midi_power[i+12]+midi_power[i+24]+midi_power[i+36]+midi_power[i+48]+midi_power[i+60];
+		}
+		for(var i=0; i<12; i++) {
+
+			if(maxpower<pitchcolor[i]) {
+
+				maxpower=pitchcolor[i];
+				maxindex=i;
+			}
+		}
+		var colorcode;
+		maxindex%=12;
+		if (maxindex==0) {
+			colorcode='#FF0000';
+		}
+		else if (maxindex==1) {
+			colorcode='#FF7F00';
+		}
+		else if (maxindex==2) {
+			colorcode='#FFFF00';
+		}
+		else if (maxindex==3) {
+			colorcode='#7F0000';
+		}
+		else if (maxindex==4) {
+			colorcode='#00FF00';
+		}
+		else if (maxindex==5) {
+			colorcode='#00FF7F';
+		}
+		else if (maxindex==6) {
+			colorcode='#00FFFF';
+		}
+		else if (maxindex==7) {
+			colorcode='#007FFF';
+		}
+		else if (maxindex==8) {
+			colorcode='#0000FF';
+		}
+		else if (maxindex==9) {
+			colorcode='#7F00FF';
+		}
+		else if (maxindex==10) {
+			colorcode='#FF00FF';
+		}
+		else if (maxindex==11) {
+			colorcode='#FF007F';
+		}
+
 		
 		// Your job is computing "amp_envelope" as a loudness measure
 		//
@@ -101,9 +190,9 @@
 		// draw circle
 		drawContext.beginPath();
 		drawContext.arc(position_x, position_y, 50, 0, 2*Math.PI, true);
-		drawContext.fillStyle = 'green';
+		drawContext.fillStyle = colorcode;
 		drawContext.fill();
-		context.strokeStyle='#003300';
+		context.strokeStyle='#000000';
 		drawContext.stroke();
 		
 				 
@@ -152,6 +241,11 @@
     	var sum_of_squares = ary.reduce(function(s,x) {return (s + x*x)}, 0);
     	return Math.sqrt(sum_of_squares / ary.length);
 	}	
+
+	function db2pow(db) {
+
+		return Math.pow(10, 0.1*db);
+	}  
 	
 	</script>
 </body>
