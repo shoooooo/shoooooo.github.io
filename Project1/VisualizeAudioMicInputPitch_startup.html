@@ -53,9 +53,7 @@
 		var hertz;
 		///// YOUR CODE IS HERE /////
 		
-		hertz = Math.pow(2,(midi-69)/12)*440;;
-
-		//formula from : https://www.native-instruments.com/forum/threads/how-can-i-calculate-freq-to-hz.13446/
+		hertz = Math.pow(2,(midi-69)/12)*440;
 		
 		
 		/////////////////////////////
@@ -78,6 +76,21 @@
 		// get samples 
 		var dataArray = new Float32Array(analyser.frequencyBinCount);
 		analyser.getFloatFrequencyData(dataArray);
+
+		var data_min=100;
+		var data_max =-200;
+
+		for(var i=0; i<dataArray.length; i++) {
+			if(dataArray[i]<data_min) {
+				data_min = dataArray[i];
+			}
+			if(dataArray[i]>data_max) {
+				data_max = dataArray[i];
+			}
+
+		}
+
+		console.log("min : "+ data_min + " / max : "+data_max);
 		
 		var freq_scale = 10;
 		var sliceWidth = WIDTH * 1.0 / (dataArray.length/freq_scale);
@@ -97,7 +110,6 @@
 	        x += sliceWidth;
 
 		}
-
 		// last touch
 		drawContext.lineTo(draw_spec.width, draw_spec.height/2);
 		drawContext.stroke();
@@ -131,7 +143,7 @@
 					sum_filter[i]=0;
 				}
 				//value[j] += comb_filter[i]*Math.abs(dataArray[i])*Math.abs(dataArray[i]);
-				var vv = Math.pow(2, dataArray[i]+100);
+				var vv = db2pow(dataArray[i]);
 				value[j] += comb_filter[i]*vv*vv;
 				value_sum[j] +=sum_filter[i]*vv*vv;
 				//console.log(dataArray[i]);
@@ -188,7 +200,7 @@
 		var HARMONICITY;
 		var threshold = 0.998;
 		HARMONICITY = Math.sqrt(value[maxindex])/Math.sqrt(value_sum[maxindex]);
-		//console.log("HARMONICITY: " + HARMONICITY +" "+ value[maxindex] + " " + value_sum[maxindex] + " " + maxindex );
+		console.log("HARMONICITY: " + HARMONICITY +" "+ value[maxindex] + " " + value_sum[maxindex] + " " + maxindex );
 
 		if ( HARMONICITY>threshold )  // THIS SHOULD BE REPLACED WITH THE CONDITIONS FOR HARMONICITY AND ENERGY VALUES 
 		{
@@ -229,6 +241,13 @@
 	// errorCallback			 
 	function onStreamError(error) {
 		console.error('Error getting microphone', error);
+	}
+
+
+	//NEW FUNCTIONS
+	function db2pow(db) {
+
+		return Math.pow(10, 0.1*db);
 	}
 
 	</script>

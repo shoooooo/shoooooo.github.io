@@ -58,7 +58,7 @@
 		var hertz;
 		///// YOUR CODE IS HERE /////
 		
-		
+		hertz = Math.pow(2,(midi-69)/12)*440;
 		
 		
 		/////////////////////////////
@@ -82,8 +82,10 @@
 
 		///// YOUR CODE IS HERE /////
 		
-		
-		
+		for (var i=0; i<midi_power.length; i++) {
+			var dataindex = Math.floor(pitch_range_hz[i] * analyser.frequencyBinCount/ context.sampleRate * 2 );
+			midi_power[i] =  db2pow(dataArray[dataindex]);
+		}
 		
 		/////////////////////////////
 
@@ -139,7 +141,12 @@
 	  if (source) {
 	    source.stop();
 	  }
-	}	   	
+	}
+	//NEW FUNCTION
+	function db2pow(db) {
+
+		return Math.pow(10, 0.1*db);
+	}  	   	
 	</script>
 </body>
 </html>
