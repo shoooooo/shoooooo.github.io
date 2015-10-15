@@ -76,21 +76,6 @@
 		// get samples 
 		var dataArray = new Float32Array(analyser.frequencyBinCount);
 		analyser.getFloatFrequencyData(dataArray);
-
-		var data_min=100;
-		var data_max =-200;
-
-		for(var i=0; i<dataArray.length; i++) {
-			if(dataArray[i]<data_min) {
-				data_min = dataArray[i];
-			}
-			if(dataArray[i]>data_max) {
-				data_max = dataArray[i];
-			}
-
-		}
-
-		console.log("min : "+ data_min + " / max : "+data_max);
 		
 		var freq_scale = 10;
 		var sliceWidth = WIDTH * 1.0 / (dataArray.length/freq_scale);
