@@ -150,7 +150,7 @@
 				
 			}
 			/*
-			if(j==value.length-1) {
+			if(j==50) {
 
 				drawContext.lineWidth = 2;
 				drawContext.strokeStyle = 'rgb(255, 0, 0)';
@@ -175,7 +175,7 @@
 				drawContext.lineTo(draw_spec.width, draw_spec.height/2);
 				drawContext.stroke();
 			}
-			*/
+			//*/
 
 		}
 		var maxval=0;
@@ -198,9 +198,9 @@
 		drawContext.font = "30px Arial";
 		
 		var HARMONICITY;
-		var threshold = 0.998;
+		var threshold = 0.96;
 		HARMONICITY = Math.sqrt(value[maxindex])/Math.sqrt(value_sum[maxindex]);
-		console.log("HARMONICITY: " + HARMONICITY +" "+ value[maxindex] + " " + value_sum[maxindex] + " " + maxindex );
+		//console.log("HARMONICITY: " + HARMONICITY +" "+ value[maxindex] + " " + value_sum[maxindex] + " " + maxindex );
 
 		if ( HARMONICITY>threshold )  // THIS SHOULD BE REPLACED WITH THE CONDITIONS FOR HARMONICITY AND ENERGY VALUES 
 		{
