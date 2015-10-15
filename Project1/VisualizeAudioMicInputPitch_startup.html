@@ -5,7 +5,7 @@
 	<title> Audio Visualization </title>
 </head>
 <body>
-	<h1> Mini Project #1: Pitch Tracking </h1>		
+	<h1> Mini Project #1: Pitch Tracking </h1>
 	
 	<p><canvas id='spec_view' style="background: white;"></canvas></p>
 
@@ -53,7 +53,9 @@
 		var hertz;
 		///// YOUR CODE IS HERE /////
 		
-		
+		hertz = Math.pow(2,(midi-69)/12)*440;;
+
+		//formula from : https://www.native-instruments.com/forum/threads/how-can-i-calculate-freq-to-hz.13446/
 		
 		
 		/////////////////////////////
@@ -86,13 +88,14 @@
 	        var v = (dataArray[i] + 100)/50;
 	        var y = HEIGHT - v * HEIGHT/2;
 
-	    	if(i === 0) {
+	    	if(i == 0) {
 	        	drawContext.moveTo(x, y);
 	        } else {
 	        	drawContext.lineTo(x, y);
 	        }
 
 	        x += sliceWidth;
+
 		}
 
 		// last touch
@@ -106,16 +109,92 @@
 		
 		///// YOUR CODE IS HERE /////
 		
+		var comb_filter = new Float32Array(analyser.frequencyBinCount);
+		var sum_filter = new Float32Array(analyser.frequencyBinCount);
+		var binfrqs = new Float32Array(analyser.frequencyBinCount);
+		var value = [pitch_range.length];
+		var value_sum = [pitch_range.length];
+		for(var i=0; i< comb_filter.length; i++) {
+
+			binfrqs[i] = i/analyser.fftSize*context.sampleRate;
+		}
+		//analyser.getFloatFrequencyData(dataArray);
+		for(var j=0; j< pitch_range.length; j++) {
+			value[j]=0;
+			value_sum[j]=0;
+			for(var i=0; i< comb_filter.length; i++) {
+
+				comb_filter[i] = 0.5*Math.cos(2*Math.PI*binfrqs[i]/pitch_range_hz[j])+0.5;
+				sum_filter[i]=1;
+				if(binfrqs[i]> NUM_HARMONICS*pitch_range_hz[j] || binfrqs[i]<pitch_range_hz[j]/2) {
+					comb_filter[i]=0;
+					sum_filter[i]=0;
+				}
+				//value[j] += comb_filter[i]*Math.abs(dataArray[i])*Math.abs(dataArray[i]);
+				var vv = Math.pow(2, dataArray[i]+100);
+				value[j] += comb_filter[i]*vv*vv;
+				value_sum[j] +=sum_filter[i]*vv*vv;
+				//console.log(dataArray[i]);
+				
+			}
+			/*
+			if(j==value.length-1) {
+
+				drawContext.lineWidth = 2;
+				drawContext.strokeStyle = 'rgb(255, 0, 0)';
+				drawContext.beginPath();
+				x=0;
+
+		
+
+				for (var i = 0; i < comb_filter.length; i++) {
+			        var v = (comb_filter[i]);
+			        var y = HEIGHT - v * HEIGHT/2;
+
+			    	if(i == 0) {
+			        	drawContext.moveTo(x, y);
+			        } else {
+			        	drawContext.lineTo(x, y);
+			        }
+
+			        x += sliceWidth;
+				}
+
+				drawContext.lineTo(draw_spec.width, draw_spec.height/2);
+				drawContext.stroke();
+			}
+			*/
+
+		}
+		var maxval=0;
+		var maxindex=0;
+		for(var i=0; i< value.length; i++) {
+			if(value[i] > maxval) {
+				maxval = value[i];
+				maxindex = i;
+			}
+			
+
+		}
+
 		
 		
+		//console.log("max index : " + maxindex);
 		
 		/////////////////////////////		
 
 		drawContext.font = "30px Arial";
-		if ( 1 )  // THIS SHOULD BE REPLACED WITH THE CONDITIONS FOR HARMONICITY AND ENERGY VALUES 
+		
+		var HARMONICITY;
+		var threshold = 0.998;
+		HARMONICITY = Math.sqrt(value[maxindex])/Math.sqrt(value_sum[maxindex]);
+		//console.log("HARMONICITY: " + HARMONICITY +" "+ value[maxindex] + " " + value_sum[maxindex] + " " + maxindex );
+
+		if ( HARMONICITY>threshold )  // THIS SHOULD BE REPLACED WITH THE CONDITIONS FOR HARMONICITY AND ENERGY VALUES 
 		{
-			var detected_pitch_position = 40;   // THIS SHOULD BE REPLACED WITH DETECTED PITCH FROM THE CODE ABOVE
-			drawContext.strokeText("-- Hz",100,50);
+			var detected_pitch_position = maxindex;
+			//console.log(maxval);   // THIS SHOULD BE REPLACED WITH DETECTED PITCH FROM THE CODE ABOVE
+			drawContext.strokeText(Math.floor(pitch_range_hz[maxindex])+" Hz",100,50);
 						
 			drawContext.fillStyle = 'rgb(100,0,0)';
 			drawContext.fillRect(detected_pitch_position, 0, 2, HEIGHT);
