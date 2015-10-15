@@ -87,7 +87,7 @@
 
 		power = root_mean_square(dataArray);
 		var current_level = amp_scale*Math.log(1.0+1.0/sensitivity*power)/Math.log(1.0+1.0/sensitivity);
-		angle+=current_level/300;
+		angle+=current_level/80;
 		var position_x = Math.sin(angle)*100+256
 		var position_y = Math.cos(angle)*100+256;
 
