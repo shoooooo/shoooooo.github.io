@@ -14,6 +14,7 @@
 	<p><canvas id='wave_view' style="background: white;"></canvas></p>
 
 	<p>I modified the templet of mini project 1-1 for this</p>
+	<p>idea of 'mapping energy to speed' from video game "Audiosurf"</p>
 
 	<script>	
 	var context;
@@ -32,6 +33,12 @@
 	var PITCH_STEP = 1;
 	var pitch_range = [];
 	var pitch_range_hz = [];
+
+	var debmax=-88888888;
+	var debmin=99999999;
+	var R=255;
+	var G=0;
+	var B=0;
 
 
 
@@ -91,66 +98,39 @@
 		var dataArray2 = new Float32Array(analyser.frequencyBincount);
 		analyser.getFloatTimeDomainData(dataArray);
 		analyser.getFloatFrequencyData(dataArray2);
+		//console.log(dataArray.length)
 
-		var midi_power = new Float32Array(pitch_range_hz.length-1);
-		var maxindex;
-		var maxpower=0;
-		for (var i=0; i<midi_power.length; i++) {
-			var dataindex = Math.floor(pitch_range_hz[i] * analyser.frequencyBinCount/ context.sampleRate * 2 );
-			midi_power[i] =  db2pow(dataArray[dataindex]);
-			
-		}
+		if(R==255 && G==255)
+			R--;
+		else if(G==255 && B==255)
+			G--;
+		else if(B==255 && R==255)
+			B--;
+		else if(R==255 && G==0 && B==0)
+			G++;
+		else if(G==255 && B==0 && R==0)
+			B++;
+		else if(B==255 && R==0 && G==0)
+			R++;
+		else if(R==0 && G>B)
+			B++;
+		else if(R==0 && G<B)
+			G--;
+		else if(G==0 && B>R)
+			R++;
+		else if(G==0 && B<R)
+			B--;
+		else if(B==0 && R>G)
+			G++;
+		else if(B==0 && R<G)
+			R--;
+		else
+			console.log("R" + R + "G" + G + "B"+ B);
 
-		var pitchcolor= new Float32Array(12);
-		for(var i=0; i<12; i++) {
-			pitchcolor[i]=midi_power[i]+midi_power[i+12]+midi_power[i+24]+midi_power[i+36]+midi_power[i+48]+midi_power[i+60];
-		}
-		for(var i=0; i<12; i++) {
 
-			if(maxpower<pitchcolor[i]) {
+		var colorcode = 'rgb('+R+', '+G+', '+B+')';
 
-				maxpower=pitchcolor[i];
-				maxindex=i;
-			}
-		}
-		var colorcode;
-		maxindex%=12;
-		if (maxindex==0) {
-			colorcode='#FF0000';
-		}
-		else if (maxindex==1) {
-			colorcode='#FF7F00';
-		}
-		else if (maxindex==2) {
-			colorcode='#FFFF00';
-		}
-		else if (maxindex==3) {
-			colorcode='#7F0000';
-		}
-		else if (maxindex==4) {
-			colorcode='#00FF00';
-		}
-		else if (maxindex==5) {
-			colorcode='#00FF7F';
-		}
-		else if (maxindex==6) {
-			colorcode='#00FFFF';
-		}
-		else if (maxindex==7) {
-			colorcode='#007FFF';
-		}
-		else if (maxindex==8) {
-			colorcode='#0000FF';
-		}
-		else if (maxindex==9) {
-			colorcode='#7F00FF';
-		}
-		else if (maxindex==10) {
-			colorcode='#FF00FF';
-		}
-		else if (maxindex==11) {
-			colorcode='#FF007F';
-		}
+
 
 		
 		// Your job is computing "amp_envelope" as a loudness measure
@@ -176,7 +156,7 @@
 
 		power = root_mean_square(dataArray);
 		var current_level = amp_scale*Math.log(1.0+1.0/sensitivity*power)/Math.log(1.0+1.0/sensitivity);
-		angle+=current_level/80;
+		angle+=current_level/150;
 		var position_x = Math.sin(angle)*100+256
 		var position_y = Math.cos(angle)*100+256;
 
