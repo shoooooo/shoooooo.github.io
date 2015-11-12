@@ -15,6 +15,7 @@
 <h1>Project 2</h1>
 <p> <a href = "Project2/multi_effect.html"> 1) Cascading audio effect units and add bypass buttons<br> 2) Adding more room impulse responses </a> </p>
 <p> <a href = "Project2/mic.html"> 3) Using microphone input </a> </p>
+<p> <b>Note :</b><br>In project2, when I implement delay with feedback, I did not follow the <a href ="http://mac.kaist.ac.kr/~juhan/ctp431/webaudio/delay_effect.html">example from the lecture</a> because it made the sound jump when I toggle bypass.<br>In my implementation, sound stream from biquad filter ALWAYS goes to convolver, and it is connected to feedbackGain node when bypass is toggled off.<br>It sounds better when I toggle bypass for delay.</p>
 </body>
 
 </html>

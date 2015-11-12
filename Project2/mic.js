@@ -346,21 +346,47 @@
 		//
 		// fill out the following part
 		/////////////////////////////////////////////////////
-		
-		bqSwitch.connect(biquad);
-		biquad.connect(delSwitch);
 
-		delSwitch.connect(delay);
-		delay.connect(conSwitch);
+		if ( !biquad_bypass ) {
+			bqSwitch.disconnect();
+			bqSwitch.connect(biquad);
+		}
+		else {
+			bqSwitch.disconnect();
+			bqSwitch.connect(delSwitch);
+		}
+		biquad.connect(delSwitch);		
+
+
+
+		if ( !delay_bypass ) { 
+			delSwitch.disconnect();
+			delSwitch.connect(feedbackGain);
+			delSwitch.connect(conSwitch);
+		}
+		else {
+			delSwitch.disconnect();
+			delSwitch.connect(conSwitch);
+		}
 		delay.connect(feedbackGain);
+		delay.connect(conSwitch);
 		feedbackGain.connect(delay);
-		
-		conSwitch.connect(convolver);
-		conSwitch.connect(dryGain)
-		convolver.connect(wetGain);
 
-		dryGain.connect(context.destination);
+
+
+		if ( !reverb_bypass ) {
+			conSwitch.disconnect();
+			conSwitch.connect(convolver);
+			conSwitch.connect(dryGain);
+		}
+		else {
+			conSwitch.disconnect();
+			conSwitch.connect(context.destination);
+		}
+		convolver.connect(wetGain);
 		wetGain.connect(context.destination);
+		dryGain.connect(context.destination);		
+
 
 
 	
@@ -404,7 +430,8 @@
 		if ( delay_bypass ) { 
 			delay_bypass = false;
 			delSwitch.disconnect();
-			delSwitch.connect(delay);
+			delSwitch.connect(feedbackGain);
+			delSwitch.connect(conSwitch);
 		}
 		else {
 			delay_bypass = true;
