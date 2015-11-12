@@ -308,8 +308,20 @@
 		// fill out the following part
 		/////////////////////////////////////////////////////
 
-	
-	
+		source.connect(biquad);
+		biquad.connect(delay);
+		delay.connect(convolver);
+		delay.connect(feedbackGain);
+		delay.connect(dryGain);
+		feedbackGain.connect(delay);
+		convolver.connect(wetGain);
+		dryGain.connect(context.destination);
+		wetGain.connect(context.destination);
+
+		//convolver.connect(context.destination);
+
+		// and then bypass..
+
 	
 	
 	
