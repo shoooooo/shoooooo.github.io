@@ -14,6 +14,12 @@
 	delSwitch.gain.value = 1;
 	conSwitch.gain.value = 1;
 	
+	/*
+	bqSwitch_bp.gain.value = 1;
+	delSwitch_bp.gain.value = 1;
+	conSwitch_bp.gain.value = 1;
+	*/
+	
 	///////////////////////////////////////////
 	// Biquad filter default
 	var biquad_params = {
@@ -53,8 +59,9 @@
 	// convolver
 	var reverb_types = [
 		"sample1.wav",
-		"sample2.wav",
-		"sample3.wav"
+		"new_reverb1.wav",
+		"new_reverb2.wav",
+		"new_reverb3.wav"
 	];
 
 	var reverb_params = {
@@ -125,6 +132,9 @@
 		updateFilter();	
 		updateDelay();			
 		updateReverb();	
+
+		console.log(audioCtx.sampleRate);
+
 	}
 	
 
@@ -320,7 +330,7 @@
 		source.connect(bqSwitch);
 		
 		bqSwitch.connect(biquad);
-		biquad.connect(delay);
+		biquad.connect(delSwitch);
 
 		delSwitch.connect(delay);
 		delay.connect(conSwitch);
@@ -372,7 +382,7 @@
 	}
 
 	function toggleDelayBypass() {
-		if ( delay_bypass ) {
+		if ( delay_bypass ) { 
 			delay_bypass = false;
 			delSwitch.disconnect();
 			delSwitch.connect(delay);
