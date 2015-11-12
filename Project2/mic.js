@@ -99,8 +99,8 @@
 
 	window.onload=function(){
 		// select a file 
-		var control = document.getElementById("fileChooseInput");
-		control.addEventListener("change", fileChanged, false);
+		//var control = document.getElementById("fileChooseInput");
+		//control.addEventListener("change", fileChanged, false);
 		
 		// select a filter
 		var filterSelect = document.getElementById("filtersDropdown");
