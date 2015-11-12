@@ -331,7 +331,7 @@
 		convolver.connect(wetGain);
 
 		dryGain.connect(context.destination);
-		wetGain.connect(connect.destination);
+		wetGain.connect(context.destination);
 
 
 	
