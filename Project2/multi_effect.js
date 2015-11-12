@@ -4,6 +4,15 @@
 	var source = null;
 	var myAudioBuffer = null;
 	var loopPlayBack = false;
+
+	//>> Switch
+
+	var bqSwitch = context.createGain();
+	var delSwitch = context.createGain();
+	var conSwitch = context.createGain();
+	bqSwitch.gain.value = 1;
+	delSwitch.gain.value = 1;
+	conSwitch.gain.value = 1;
 	
 	///////////////////////////////////////////
 	// Biquad filter default
@@ -308,19 +317,22 @@
 		// fill out the following part
 		/////////////////////////////////////////////////////
 
-		source.connect(biquad);
+		source.connect(bqSwitch);
+		
+		bqSwitch.connect(biquad);
 		biquad.connect(delay);
-		delay.connect(convolver);
+
+		delSwitch.connect(delay);
+		delay.connect(conSwitch);
 		delay.connect(feedbackGain);
-		delay.connect(dryGain);
-		feedbackGain.connect(delay);
+		
+		conSwitch.connect(convolver);
+		conSwitch.connect(dryGain)
 		convolver.connect(wetGain);
+
 		dryGain.connect(context.destination);
-		wetGain.connect(context.destination);
+		wetGain.connect(connect.destination);
 
-		//convolver.connect(context.destination);
-
-		// and then bypass..
 
 	
 	
@@ -344,4 +356,45 @@
 		else {
 			loopPlayBack = true;
 		}		
-	}	
+	}
+
+	function toggleFilterBypass() {
+		if ( biquad_bypass ) {
+			biquad_bypass = false;
+			bqSwitch.disconnect();
+			bqSwitch.connect(biquad);
+		}
+		else {
+			biquad_bypass = true;
+			bqSwitch.disconnect();
+			bqSwitch.connect(delSwitch);
+		}		
+	}
+
+	function toggleDelayBypass() {
+		if ( delay_bypass ) {
+			delay_bypass = false;
+			delSwitch.disconnect();
+			delSwitch.connect(delay);
+		}
+		else {
+			delay_bypass = true;
+			delSwitch.disconnect();
+			delSwitch.connect(conSwitch);
+		}		
+	}
+
+	function toggleReverbBypass() {
+		if ( reverb_bypass ) {
+			reverb_bypass = false;
+			conSwitch.disconnect();
+			conSwitch.connect(convolver);
+			conSwitch.connect(dryGain);
+		}
+		else {
+			reverb_bypass = true;
+			conSwitch.disconnect();
+			conSwitch.connect(context.destination);
+		}		
+	}
+
