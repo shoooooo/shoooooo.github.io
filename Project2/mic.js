@@ -4,6 +4,21 @@
 	var source = null;
 	var myAudioBuffer = null;
 	var loopPlayBack = false;
+
+	//>> Switch
+
+	var bqSwitch = context.createGain();
+	var delSwitch = context.createGain();
+	var conSwitch = context.createGain();
+	bqSwitch.gain.value = 1;
+	delSwitch.gain.value = 1;
+	conSwitch.gain.value = 1;
+	
+	/*
+	bqSwitch_bp.gain.value = 1;
+	delSwitch_bp.gain.value = 1;
+	conSwitch_bp.gain.value = 1;
+	*/
 	
 	///////////////////////////////////////////
 	// Biquad filter default
@@ -44,8 +59,9 @@
 	// convolver
 	var reverb_types = [
 		"sample1.wav",
-		"sample2.wav",
-		"sample3.wav"
+		"new_reverb1.wav",
+		"new_reverb2.wav",
+		"new_reverb3.wav"
 	];
 
 	var reverb_params = {
@@ -116,6 +132,9 @@
 		updateFilter();	
 		updateDelay();			
 		updateReverb();	
+
+		console.log(context.sampleRate);
+
 	}
 	
 
@@ -293,13 +312,33 @@
 	    drawContext.stroke();
     } 
 
+    if (!navigator.getUserMedia)
+		navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+							  
+	if (!navigator.getUserMedia)
+		alert("Error: getUserMedia not supported!");
+						
+	// get audio input streaming 				 
+	navigator.getUserMedia({audio: true}, onStream, onStreamError)
+
+	// successCallback
+	function onStream(stream) {
+	    var input = context.createMediaStreamSource(stream);
+		
+		// Connect graph
+		input.connect(bqSwitch);
+		playSound();
+							 	
+	}
+	
+	// errorCallback			 
+	function onStreamError(error) {
+		console.error('Error getting microphone', error);
+	}
+
 	///////////////////////////////////////////
 	// play and stop
 	function playSound(anybuffer) {
-		// create buffersource
-		source = context.createBufferSource();
-		source.buffer = anybuffer;
-		source.loop = loopPlayBack;
 
 		/////////////////////////////////////////////////////
 		// TODO: cascade three audio effect units
@@ -307,9 +346,23 @@
 		//
 		// fill out the following part
 		/////////////////////////////////////////////////////
+		
+		bqSwitch.connect(biquad);
+		biquad.connect(delSwitch);
 
-	
-	
+		delSwitch.connect(delay);
+		delay.connect(conSwitch);
+		delay.connect(feedbackGain);
+		feedbackGain.connect(delay);
+		
+		conSwitch.connect(convolver);
+		conSwitch.connect(dryGain)
+		convolver.connect(wetGain);
+
+		dryGain.connect(context.destination);
+		wetGain.connect(context.destination);
+
+
 	
 	
 	
@@ -332,4 +385,45 @@
 		else {
 			loopPlayBack = true;
 		}		
-	}	
+	}
+
+	function toggleFilterBypass() {
+		if ( biquad_bypass ) {
+			biquad_bypass = false;
+			bqSwitch.disconnect();
+			bqSwitch.connect(biquad);
+		}
+		else {
+			biquad_bypass = true;
+			bqSwitch.disconnect();
+			bqSwitch.connect(delSwitch);
+		}		
+	}
+
+	function toggleDelayBypass() {
+		if ( delay_bypass ) { 
+			delay_bypass = false;
+			delSwitch.disconnect();
+			delSwitch.connect(delay);
+		}
+		else {
+			delay_bypass = true;
+			delSwitch.disconnect();
+			delSwitch.connect(conSwitch);
+		}		
+	}
+
+	function toggleReverbBypass() {
+		if ( reverb_bypass ) {
+			reverb_bypass = false;
+			conSwitch.disconnect();
+			conSwitch.connect(convolver);
+			conSwitch.connect(dryGain);
+		}
+		else {
+			reverb_bypass = true;
+			conSwitch.disconnect();
+			conSwitch.connect(context.destination);
+		}		
+	}
+
