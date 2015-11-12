@@ -133,7 +133,7 @@
 		updateDelay();			
 		updateReverb();	
 
-		console.log(audioCtx.sampleRate);
+		console.log(context.sampleRate);
 
 	}
 	
@@ -335,6 +335,7 @@
 		delSwitch.connect(delay);
 		delay.connect(conSwitch);
 		delay.connect(feedbackGain);
+		feedbackGain.connect(delay);
 		
 		conSwitch.connect(convolver);
 		conSwitch.connect(dryGain)
