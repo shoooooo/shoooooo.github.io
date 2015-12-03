@@ -33,6 +33,9 @@
     var dgain = context.createGain();
 	var rgain = context.createGain();
 	var convolver = context.createConvolver();
+	var rv = false;
+	rgain.gain.value = 0;
+	dgain.gain.value = 1;
 	
 
 	var Voice = function(context, frequency, parameters) {
@@ -68,11 +71,10 @@
 	  // load the impulse response asynchronously
 	  var request = new XMLHttpRequest();
 	  request.open("GET", "../Project2/new_reverb3.wav", true);
-	  request.responseType = "arraybuffer";
-	 
-	  request.onload = function () {
-	     context.decodeAudioData(request.response, function(buffer) {
-	        convolver.buffer = convolverBuffer;
+	  request.responseType = 'arraybuffer';
+	  	request.onload = function() {
+	    context.decodeAudioData(request.response, function(buffer) {
+			convolver.buffer = buffer;
 	        //playSound();
 	     });
 	  }
@@ -317,6 +319,20 @@
 		synth.noteOff(getMIDINumOfNote(note));
     };
 		
+
+	function Reverb() {
+		if(rv == true) {
+			rv=false;
+			rgain.gain.value = 0;
+			dgain.gain.value = 1;
+		}
+		else {
+			rv=true;
+			rgain.gain.value = 0.5;
+			dgain.gain.value = 0.5;
+		}
+
+	}
 	</script>
 </body>
 
