@@ -13,6 +13,8 @@
 	<p><select id="PresetDropDown"> </select> </p>
 	<div id="keyboard"></div>
 	<p><input type="checkbox" onclick="Reverb()">Add Reverb</input></p>	
+	<p></p>
+	<p><b>Note</b><br>Reverb source from <a href = "http://creativejs.com/resources/web-audio-api-a-bit-more-advanced/">http://creativejs.com/resources/web-audio-api-a-bit-more-advanced/</a></p>
 	
 	<script src="qwerty-hancock.js"></script>
 	<script>
@@ -328,8 +330,8 @@
 		}
 		else {
 			rv=true;
-			rgain.gain.value = 0.5;
-			dgain.gain.value = 0.5;
+			rgain.gain.value = 0.8;
+			dgain.gain.value = 0.2;
 		}
 
 	}
