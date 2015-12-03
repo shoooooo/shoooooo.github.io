@@ -68,6 +68,10 @@
 	  this.carrierOsc.frequency.value = frequency;
 	  
 	  this.lowpassfilter.type = 'lowpass';
+
+	  this.FilterFreq = parameters.FilterFreq;
+	  this.FilterFreqTarget = parameters.FilterFreqTarget;
+	  this.FilterFreqDecayTime = parameters.FilterFreqDecayTime;
 	  
 	};
 
@@ -109,8 +113,10 @@
 	  var now = this.context.currentTime;
 
 	  param.cancelScheduledValues(now);
-	  param.setValueAtTime(2000, now);
-	  param.exponentialRampToValueAtTime(500, now + 0.5);
+	  param.setValueAtTime(this.FilterFreq, now);
+	  param.exponentialRampToValueAtTime(this.FilterFreqTarget, now + this.FilterFreqDecayTime);
+
+	  console.log(this.FilterFreq);
 	};
 	
 	Voice.prototype.off = function() {
@@ -162,7 +168,10 @@
 		AmpEnvAttackTime: 0.2,
 		AmpEnvDecayTime: 0.3,
 		AmpEnvSustainLevel: 0.9,
-		AmpEnvReleaseTime: 0.5
+		AmpEnvReleaseTime: 0.5,
+		FilterFreq: 2000,
+	  	FilterFreqTarget: 500,
+	  	FilterFreqDecayTime: 0.5
 	};
 	
 	// Electroc Piano
@@ -177,13 +186,35 @@
 		AmpEnvAttackTime: 0,
 		AmpEnvDecayTime: 3,
 		AmpEnvSustainLevel: 0.001,
-		AmpEnvReleaseTime: 0.1
+		AmpEnvReleaseTime: 0.1,
+		FilterFreq: 2000,
+	  	FilterFreqTarget: 500,
+	  	FilterFreqDecayTime: 0.5
+	};
+
+	// Bells
+	var bell_params = {
+		presetName: "Bell",
+		carrierModulationRatio: 1/1.4,
+		modulationIndex: 2,
+		IndexAttackTime: 0,
+		IndexDecayTime: 10,
+		IndexSustainLevel: 0.001,
+		IndexReleaseTime: 3,
+		AmpEnvAttackTime: 0,
+		AmpEnvDecayTime: 10,
+		AmpEnvSustainLevel: 0.001,
+		AmpEnvReleaseTime: 3,
+		FilterFreq: 5000,
+	  	FilterFreqTarget: 2000,
+	  	FilterFreqDecayTime: 5
 	};
 
 	// add presets
 	var presets = [];
 	presets.push(brass_params);
 	presets.push(ep_params);
+	presets.push(bell_params);
 	
 	var synth;
 
