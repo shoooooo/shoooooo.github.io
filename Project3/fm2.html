@@ -12,7 +12,7 @@
 		
 	<p><select id="PresetDropDown"> </select> </p>
 	<div id="keyboard"></div>
-	
+	<p><input type="checkbox" onclick="Reverb()">Add Reverb</input></p>	
 	
 	<script src="qwerty-hancock.js"></script>
 	<script>
@@ -29,6 +29,10 @@
         octaves: 2
     },
     keyboard = new QwertyHancock(settings);
+
+    var dgain = context.createGain();
+	var rgain = context.createGain();
+	var convolver = context.createConvolver();
 	
 
 	var Voice = function(context, frequency, parameters) {
@@ -45,12 +49,34 @@
 	  // lowpass filter 
 	  this.lowpassfilter = context.createBiquadFilter();
 
+
 	  // connect
 	  this.modulatingOsc.connect(this.modulatingOscGain);
 	  this.modulatingOscGain.connect(this.carrierOsc.frequency);
 	  this.carrierOsc.connect(this.carrierOscGain);
 	  this.carrierOscGain.connect(this.lowpassfilter);
-	  this.lowpassfilter.connect(context.destination);
+	  this.lowpassfilter.connect(dgain);
+	  this.lowpassfilter.connect(convolver);
+	  convolver.connect(rgain);
+
+	  
+ 
+	  // Wiring
+	  rgain.connect(context.destination);
+	  dgain.connect(context.destination);
+	 
+	  // load the impulse response asynchronously
+	  var request = new XMLHttpRequest();
+	  request.open("GET", "../Project2/new_reverb3.wav", true);
+	  request.responseType = "arraybuffer";
+	 
+	  request.onload = function () {
+	     context.decodeAudioData(request.response, function(buffer) {
+	        convolver.buffer = convolverBuffer;
+	        //playSound();
+	     });
+	  }
+	  request.send();
 	  
 	  // preset parameters 
 	  this.modulationIndex = parameters.modulationIndex;
