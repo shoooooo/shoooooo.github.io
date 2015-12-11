@@ -15,7 +15,50 @@
     </style>
 	<font size = 666> final project </font> fqwefqwefasdfqwefawefasdfqwefasdfasdfasdf <h1><b>커밍쑨</b></h1>
 	<img src = "unib.png">
+
+	<canvas id="myCanvas" width="1000" height="1000"></canvas>
+
+
 	<script>	
+
+
+
+	(function() {
+    document.onmousemove = handleMouseMove;
+    function handleMouseMove(event) {
+        var dot, eventDoc, doc, body, pageX, pageY;
+
+        event = event || window.event; // IE-ism
+
+        // If pageX/Y aren't available and clientX/Y are,
+        // calculate pageX/Y - logic taken from jQuery.
+        // (This is to support old IE)
+        if (event.pageX == null && event.clientX != null) {
+            eventDoc = (event.target && event.target.ownerDocument) || document;
+            doc = eventDoc.documentElement;
+            body = eventDoc.body;
+
+            event.pageX = event.clientX +
+              (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+              (doc && doc.clientLeft || body && body.clientLeft || 0);
+            event.pageY = event.clientY +
+              (doc && doc.scrollTop  || body && body.scrollTop  || 0) -
+              (doc && doc.clientTop  || body && body.clientTop  || 0 );
+        }
+
+        // Use event.pageX / event.pageY here
+
+       var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      var imageObj = new Image();
+
+      imageObj.onload = function() {
+        context.drawImage(imageObj, event.pageX, event.pageY);
+      };
+      imageObj.src = 'unib.png';
+    
+    }
+})();
 
 	</script>
 </body>
