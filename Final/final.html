@@ -3,27 +3,155 @@
 <head>
 	<meta charset="utf-8">
 	<title> Final Project </title>
+  <style>
+  body {
+    background-color: black
+  }
+  </style>
+
 </head>
 <body>		
-	<style type='text/css'>
-            * {color:green;}
-            p {background-color:black;}
-            div
-			{
-				cursor:url(unib.png),url(unib.png),url(unib.png);
-			}
-    </style>
-	<font size = 666> final project </font> fqwefqwefasdfqwefawefasdfqwefasdfasdfasdf <h1><b>커밍쑨</b></h1>
-	<img src = "unib.png">
 
-	<canvas id="myCanvas" width="1000" height="1000"></canvas>
+	<div style="position: relative;">
+ <canvas id="c" width="1000" height="1000" 
+   style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+ <canvas id="d" width="1000" height="1000" 
+   style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+</div>
+
 
 
 	<script>	
 
+var a=100;
+var t3 = Math.sqrt(3);
+var X = 0;
+var Y = 0;
+
+function n2h(n, X, Y) {
+  var text;
+  if(n==1) {
+    c2.fillStyle = '#f00';
+    text="C";
+  }
+  else if(n==2) {
+    c2.fillStyle = '#f70';
+    X+=1.5*a;
+    Y+=2.5*t3*a;
+    text="C#";
+  }
+  else if(n==3) {
+    c2.fillStyle = '#ff0';
+    X+=3*a;
+    Y+=t3*a;
+    text="D";
+  }
+  else if(n==4) {
+    c2.fillStyle = '#7f0';
+    X+=0;
+    Y+=1*t3*a;
+    text="D#";
+  }
+  else if(n==5) {
+    c2.fillStyle = '#0f0';
+    X+=1.5*a;
+    Y-=0.5*t3*a;
+    text="E";
+  }
+  else if(n==6) {
+    c2.fillStyle = '#0f7';
+    X+=3*a;
+    Y+=2*t3*a;
+    text="F";
+  }
+  else if(n==7) {
+    c2.fillStyle = '#0ff';
+    X+=0;
+    Y+=2*t3*a;
+    text="F#";
+  }
+  else if(n==8) {
+    c2.fillStyle = '#07f';
+    X+=1.5*a;
+    Y+=0.5*t3*a;
+    text="G";
+  }
+  else if(n==9) {
+    c2.fillStyle = '#00f';
+    X+=3*a;
+    Y-=t3*a;
+    text="G#";
+  }
+  else if(n==10) {
+    c2.fillStyle = '#70f';
+    X+=0;
+    Y+=3*t3*a;
+    text="A";
+  }
+  else if(n==11) {
+    c2.fillStyle = '#f0f';
+    X+=1.5*a;
+    Y+=1.5*t3*a;
+    text="A#";
+  }
+  else if(n==12) {
+    c2.fillStyle = '#f07';
+    X+=3*a;
+    Y+=0;
+    text="B";
+  }
+  c2.globalAlpha=0.5
+  c2.beginPath();
+  c2.moveTo(X+a, Y);
+  c2.lineTo(X+a/2, Y+a*t3/2);
+  c2.lineTo(X-a/2, Y+a*t3/2);
+  c2.lineTo(X-a, Y);
+  c2.lineTo(X-a/2, Y-a*t3/2);
+  c2.lineTo(X+a/2, Y-a*t3/2);
+  c2.closePath();
+  c2.fill();
+  c2.globalAlpha=0.15;
+  c2.fillStyle='#fff';
+  c2.font = '40pt Calibri';
+  c2.textAlign = 'center';
+  c2.textBaseline = 'middle';
+  c2.fillText(text, X, Y);
+
+}
+
+var c2 = document.getElementById('c').getContext('2d');
+
+for(var i=1; i<=12; i++) {
+  n2h(i,0,0);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,4.5*a,2.5*t3*a);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,0,4*t3*a);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,4.5*a,-1.5*t3*a);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,4.5*a,6.5*t3*a);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,9*a,-3*t3*a);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,9*a,1*t3*a);
+}
+for(var i=1; i<=12; i++) {
+  n2h(i,9*a,5*t3*a);
+}
 
 
-	(function() {
+var d2 = document.getElementById('d').getContext('2d');
+d2.fillStyle = '#fff';
+d2.globalAlpha=0.6;
+
+(function() {
     document.onmousemove = handleMouseMove;
     function handleMouseMove(event) {
         var dot, eventDoc, doc, body, pageX, pageY;
@@ -48,17 +176,46 @@
 
         // Use event.pageX / event.pageY here
 
-       var canvas = document.getElementById('myCanvas');
-      var context = canvas.getContext('2d');
-      var imageObj = new Image();
+      
 
-      imageObj.onload = function() {
-        context.drawImage(imageObj, event.pageX, event.pageY);
-      };
-      imageObj.src = 'unib.png';
+      d2.beginPath();
+      d2.arc(event.pageX, event.pageY, 100, 0, 2 * Math.PI, false);
+      d2.fillStyle = '#ffffff';
+      
+      d2.lineWidth = 5;
+      d2.strokeStyle = '#999999';
+      d2.clearRect(0, 0, 1000, 1000);
+      d2.stroke();
+      d2.fill();
     
     }
 })();
+var e2 = document.getElementById('d')
+e2.addEventListener("mousedown", function (e) {
+        OnButtonDown()
+    }, false);
+    e2.addEventListener("mouseup", function (e) {
+        OnButtonUp()
+    }, false);
+
+var ac = new AudioContext(); // Create audio container
+
+var oscillator = ac.createOscillator(); // Create sound source
+
+var clickDetector = ac.createGain();
+clickDetector.gain.value = 0;
+  
+oscillator.connect(clickDetector); // Connect sound to output
+clickDetector.connect(ac.destination);
+oscillator.start(0); // Play instantly
+
+function OnButtonDown (button) {
+  clickDetector.gain.value = 1;
+}
+function OnButtonUp (button) {
+
+  clickDetector.gain.value = 0;
+}
 
 	</script>
 </body>
