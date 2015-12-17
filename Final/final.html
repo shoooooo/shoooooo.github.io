@@ -12,7 +12,7 @@
 </head>
 <body>		
 
-	<div style="position: relative;">
+	<div>
  <canvas id="c" width="1000" height="1000" 
    style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
  <canvas id="d" width="1000" height="1000" 
@@ -27,6 +27,8 @@ var a=100;
 var t3 = Math.sqrt(3);
 var X = 0;
 var Y = 0;
+var gX = 0;
+var gY = 0;
 
 function n2h(n, X, Y) {
   var text;
@@ -187,7 +189,45 @@ d2.globalAlpha=0.6;
       d2.clearRect(0, 0, 1000, 1000);
       d2.stroke();
       d2.fill();
-    
+      var sX = event.pageX;
+      var offset = 0;
+      while(true) {
+        if(sX<4.5*a)
+          break;
+        else {
+          sX-=4.5*a;
+          offset ++;
+        }
+      }
+      var sY = event.pageY+1.5*t3*a*offset;
+      while(true) {
+        if(sY<4*t3*a)
+          break;
+        else
+          sY-=4*t3*a;
+
+      }
+      if(sY > 4*t3*a-t3*sX/3) {
+        sY-=4*t3*a;
+
+      }
+      gX = sX;
+      gY = sY;
+      //console.log('('+sX+','+sY+')');
+
+      V1_1.gain.value = D2V(Dist(1,gX,gY));
+      V1_2.gain.value = D2V(Dist(2,gX,gY));
+      V1_3.gain.value = D2V(Dist(3,gX,gY));
+      V1_4.gain.value = D2V(Dist(4,gX,gY));
+      V1_5.gain.value = D2V(Dist(5,gX,gY));
+      V1_6.gain.value = D2V(Dist(6,gX,gY));
+      V1_7.gain.value = D2V(Dist(7,gX,gY));
+      V1_8.gain.value = D2V(Dist(8,gX,gY));
+      V1_9.gain.value = D2V(Dist(9,gX,gY));
+      V1_10.gain.value = D2V(Dist(10,gX,gY));
+      V1_11.gain.value = D2V(Dist(11,gX,gY));
+      V1_12.gain.value = D2V(Dist(12,gX,gY));
+
     }
 })();
 var e2 = document.getElementById('d')
@@ -200,14 +240,102 @@ e2.addEventListener("mousedown", function (e) {
 
 var ac = new AudioContext(); // Create audio container
 
-var oscillator = ac.createOscillator(); // Create sound source
+
+var N1_1 = ac.createOscillator();
+N1_1.frequency.value = 261.626;
+var V1_1 = ac.createGain();
+V1_1.gain.value = 0;
+var N1_2 = ac.createOscillator();
+N1_2.frequency.value = 277.183;
+var V1_2 = ac.createGain();
+V1_2.gain.value = 0;
+var N1_3 = ac.createOscillator();
+N1_3.frequency.value = 293.665;
+var V1_3 = ac.createGain();
+V1_3.gain.value = 0;
+var N1_4 = ac.createOscillator();
+N1_4.frequency.value = 311.127;
+var V1_4 = ac.createGain();
+V1_4.gain.value = 0;
+var N1_5 = ac.createOscillator();
+N1_5.frequency.value = 329.628;
+var V1_5 = ac.createGain();
+V1_5.gain.value = 0;
+var N1_6 = ac.createOscillator();
+N1_6.frequency.value = 349.228;
+var V1_6 = ac.createGain();
+V1_6.gain.value = 0;
+var N1_7 = ac.createOscillator();
+N1_7.frequency.value = 369.994;
+var V1_7 = ac.createGain();
+V1_7.gain.value = 0;
+var N1_8 = ac.createOscillator();
+N1_8.frequency.value = 391.995;
+var V1_8 = ac.createGain();
+V1_8.gain.value = 0;
+var N1_9 = ac.createOscillator();
+N1_9.frequency.value = 415.305;
+var V1_9 = ac.createGain();
+V1_9.gain.value = 0;
+var N1_10 = ac.createOscillator();
+N1_10.frequency.value = 440;
+var V1_10 = ac.createGain();
+V1_10.gain.value = 0;
+var N1_11 = ac.createOscillator();
+N1_11.frequency.value = 466.164;
+var V1_11 = ac.createGain();
+V1_11.gain.value = 0;
+var N1_12 = ac.createOscillator();
+N1_12.frequency.value = 493.883;
+var V1_12 = ac.createGain();
+V1_12.gain.value = 0;
+
+N1_1.connect(V1_1);
+N1_2.connect(V1_2);
+N1_3.connect(V1_3);
+N1_4.connect(V1_4);
+N1_5.connect(V1_5);
+N1_6.connect(V1_6);
+N1_7.connect(V1_7);
+N1_8.connect(V1_8);
+N1_9.connect(V1_9);
+N1_10.connect(V1_10);
+N1_11.connect(V1_11);
+N1_12.connect(V1_12);
 
 var clickDetector = ac.createGain();
 clickDetector.gain.value = 0;
-  
-oscillator.connect(clickDetector); // Connect sound to output
+
+V1_1.connect(clickDetector);
+V1_2.connect(clickDetector);
+V1_3.connect(clickDetector);
+V1_4.connect(clickDetector);
+V1_5.connect(clickDetector);
+V1_6.connect(clickDetector);
+V1_7.connect(clickDetector);
+V1_8.connect(clickDetector);
+V1_9.connect(clickDetector);
+V1_10.connect(clickDetector);
+V1_11.connect(clickDetector);
+V1_12.connect(clickDetector);
+N1_1.start(0);
+N1_2.start(0);
+N1_3.start(0);
+N1_4.start(0);
+N1_5.start(0);
+N1_6.start(0);
+N1_7.start(0);
+N1_8.start(0);
+N1_9.start(0);
+N1_10.start(0);
+N1_11.start(0);
+N1_12.start(0);
+
+
+
 clickDetector.connect(ac.destination);
-oscillator.start(0); // Play instantly
+
+
 
 function OnButtonDown (button) {
   clickDetector.gain.value = 1;
@@ -215,6 +343,59 @@ function OnButtonDown (button) {
 function OnButtonUp (button) {
 
   clickDetector.gain.value = 0;
+}
+function Dist(n, X, Y) {
+  var ret;
+  if(n==1) {
+    ret = Math.min(DH(X,Y,0,0),DH(X,Y,4.5*a,-1.5*t3*a),DH(X,Y,0,4*t3*a),DH(X,Y,4.5*a,2.5*t3*a));
+  }
+  else if (n==2) {
+    ret = DH(X,Y,1.5*a,2.5*t3*a);
+  }
+  else if (n==3) {
+    ret = DH(X,Y,3*a,t3*a);
+  }
+  else if (n==4) {
+    ret = Math.min(DH(X,Y,0,t3*a),DH(X,Y,4.5*a,-0.5*t3*a));
+  }
+  else if (n==5) {
+    ret = Math.min(DH(X,Y,1.5*a,-0.5*t3*a),DH(X,Y,1.5*a,3.5*t3*a));
+  }
+  else if (n==6) {
+    ret = DH(X,Y,3*a,2*t3*a);
+  }
+  else if (n==7) {
+    ret = Math.min(DH(X,Y,0,2*t3*a),DH(X,Y,4.5*a,0.5*t3*a));
+  }
+  else if (n==8) {
+    ret = DH(X,Y,2*a,0.5*t3*a);
+  }
+  else if (n==9) {
+    ret = Math.min(DH(X,Y,3*a,-t3*a),DH(X,Y,3*a,3*t3*a));
+  }
+  else if (n==10) {
+    ret = Math.min(DH(X,Y,0,3*t3*a),DH(X,Y,4.5*a,1.5*t3*a));
+  }
+  else if (n==11) {
+    ret = DH(X,Y,1.5*a,1.5*t3*a);
+  }
+  else if (n==12) {
+    ret = DH(X,Y,3*a,0);
+  }
+
+  return ret;
+
+}
+function DH(x1, y1, x2, y2) {
+  return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+
+}
+function D2V(d) {
+
+  var ret = 150-d;
+  if(ret<0) return 0;
+  else return ret/150.0;
+
 }
 
 	</script>
