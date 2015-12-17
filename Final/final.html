@@ -149,32 +149,6 @@ while(true) {
   if(dY>window.innerHeight+100+t3*window.innerWidth/3)
     break;
 }
-/*
-for(var i=1; i<=12; i++) {
-  n2h(i,0,0);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,4.5*a,2.5*t3*a);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,0,4*t3*a);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,4.5*a,-1.5*t3*a);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,4.5*a,6.5*t3*a);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,9*a,-3*t3*a);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,9*a,1*t3*a);
-}
-for(var i=1; i<=12; i++) {
-  n2h(i,9*a,5*t3*a);
-}
-*/
 
 var d2 = document.getElementById('d').getContext('2d');
 d2.canvas.width = window.innerWidth;
@@ -188,11 +162,8 @@ d2.globalAlpha=0.6;
     function handleMouseMove(event) {
         var dot, eventDoc, doc, body, pageX, pageY;
 
-        event = event || window.event; // IE-ism
+        event = event || window.event; 
 
-        // If pageX/Y aren't available and clientX/Y are,
-        // calculate pageX/Y - logic taken from jQuery.
-        // (This is to support old IE)
         if (event.pageX == null && event.clientX != null) {
             eventDoc = (event.target && event.target.ownerDocument) || document;
             doc = eventDoc.documentElement;
@@ -205,8 +176,6 @@ d2.globalAlpha=0.6;
               (doc && doc.scrollTop  || body && body.scrollTop  || 0) -
               (doc && doc.clientTop  || body && body.clientTop  || 0 );
         }
-
-        // Use event.pageX / event.pageY here
 
       
 
@@ -243,7 +212,6 @@ d2.globalAlpha=0.6;
       }
       gX = sX;
       gY = sY;
-      //console.log('('+sX+','+sY+')');
 
       V1.gain.value = D2V(Dist(1,gX,gY));
       V2.gain.value = D2V(Dist(2,gX,gY));
@@ -268,8 +236,10 @@ e2.addEventListener("mousedown", function (e) {
         OnButtonUp()
     }, false);
 
-var ac = new AudioContext(); // Create audio container
+var ac = new AudioContext();
 
+var envel = ac.createGain();
+envel.gain.value=0;
 
 var N1_1 = ac.createOscillator();
 N1_1.frequency.value = 261.626;
@@ -667,17 +637,33 @@ N3_11.start(0);
 N3_12.start(0);
 
 
+clickDetector.gain.value=1;
+clickDetector.connect(envel);
+envel.connect(ac.destination);
 
-clickDetector.connect(ac.destination);
-
-
-
+var downtime=Date.now();
+var uptime =Date.now();
 function OnButtonDown (button) {
-  clickDetector.gain.value = 1;
+    
+    var env = envel.gain;
+    var now = ac.currentTime;
+
+    env.cancelScheduledValues(now);
+    env.setValueAtTime(0, now);
+
+  
+    env.linearRampToValueAtTime(1.3, now + 0.010);
+    env.exponentialRampToValueAtTime(1, now + 0.700);
 }
 function OnButtonUp (button) {
 
-  clickDetector.gain.value = 0;
+    var env = envel.gain;
+    var now = ac.currentTime;
+    env.cancelScheduledValues(now);
+    var fr = env.value;
+    env.setValueAtTime(fr,now);
+     
+    env.linearRampToValueAtTime(0, now + 0.1);
 }
 function Dist(n, X, Y) {
   var ret;
@@ -703,7 +689,7 @@ function Dist(n, X, Y) {
     ret = Math.min(DH(X,Y,0,2*t3*a),DH(X,Y,4.5*a,0.5*t3*a));
   }
   else if (n==8) {
-    ret = DH(X,Y,2*a,0.5*t3*a);
+    ret = DH(X,Y,1.5*a,0.5*t3*a);
   }
   else if (n==9) {
     ret = Math.min(DH(X,Y,3*a,-t3*a),DH(X,Y,3*a,3*t3*a));
