@@ -4,8 +4,11 @@
 	<meta charset="utf-8">
 	<title> Final Project </title>
   <style>
-  body {
-    background-color: black
+  html, body {
+    background-color: black;
+    width : 100%;
+    height :100%;
+    margin : 0px;
   }
   </style>
 
@@ -122,7 +125,30 @@ function n2h(n, X, Y) {
 }
 
 var c2 = document.getElementById('c').getContext('2d');
+c2.canvas.width = window.innerWidth;
+c2.canvas.height = window.innerHeight;
 
+var dX=0;
+var dY=0;
+var dxc = 0;
+while(true) {
+  while(true) {
+    for(var i=1; i<=12; i++) {
+      n2h(i,dX,dY-1.5*dxc*t3*a);
+    }
+    dX+=4.5*a;
+    dxc++;
+    if(dX>window.innerWidth+100)
+      break;
+
+  }
+  dY+=4*t3*a;
+  dX=0;
+  dxc=0;
+  if(dY>window.innerHeight+100+t3*window.innerWidth/3)
+    break;
+}
+/*
 for(var i=1; i<=12; i++) {
   n2h(i,0,0);
 }
@@ -147,11 +173,14 @@ for(var i=1; i<=12; i++) {
 for(var i=1; i<=12; i++) {
   n2h(i,9*a,5*t3*a);
 }
-
+*/
 
 var d2 = document.getElementById('d').getContext('2d');
+d2.canvas.width = window.innerWidth;
+d2.canvas.height = window.innerHeight;
 d2.fillStyle = '#fff';
 d2.globalAlpha=0.6;
+
 
 (function() {
     document.onmousemove = handleMouseMove;
@@ -186,7 +215,7 @@ d2.globalAlpha=0.6;
       
       d2.lineWidth = 5;
       d2.strokeStyle = '#999999';
-      d2.clearRect(0, 0, 1000, 1000);
+      d2.clearRect(0, 0, window.innerWidth, window.innerHeight);
       d2.stroke();
       d2.fill();
       var sX = event.pageX;
