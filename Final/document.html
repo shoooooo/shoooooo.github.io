@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>2015 Fall CTP431 Final Project Documentation</title>
+</head>
+<body>
+<h1>2015 Fall CTP431 Final Project Documentation</h1>
+<h2><b>CHOI Kweon / 20090947</b><h2>
+<br>
+<h2>Description</h2>
+
+<p>A musical interface built from javascript web audio API</p>
+<p>You can move white circle with mouse, and hexagonal blocks under the circle plays tone when you click.</p>
+<p>You can play triad chords by covering 3 blocks at once</p>
+<br>
+<h2>More Description</h2>
+
+<p><b> Isomorphic Keyboard</b></p>
+
+<p>It seems like accordion keys, but the layout is different. This layout is built to play triad chords easier.</p>
+<p>If you choose any of adjacent three blocks, they will make a major/minor triad.</p>
+<p>Just like other isomorphic keyboards, you can change your music's key by moving your hand in parallel.</p>
+<p>You can play continuous change of chords by clicking and dragging.</p>
+
+<p><b> Sound Design</b></p>
+
+<p>To make all keys sound equal, notes are in Shepard tone.</p>
+<p>Bell-shaped filter and its graph for the tone : <br>
+y = (0.5+0.5*sin((log(f)-log(130.8))*2*pi/(log(1688)-log(130.8))-pi/2))*1.5*130.8^2/f^2</p>
+<img src = "bell.png">
+<p>ADSR envelope : <br>
+A = 10ms / D = 700ms / S = 77% / R = 100ms</p>
+<p>Sound gain level for each key : <br>
+G = a-2*d/3 (d<1.5a) <br>
+G = 0 (d>1.5a) <br>
+(d is distance between the center of a key and the center of white circle) <br>
+(a is the length of side of hexagons)</p>
+<br>
+<h2>Further improvement</h2>
+
+<p>Parameter control for sound design</p>
+<p>Mapping mouse position to panning/sound tone</p>
+<p>iPad app that support multitouch</p>
+<p>Giving a good name for the project/app</p>
+<br><br>
+<p>click <a href = "final.html">here</a> to play it</p>
+<br>
+</body>
+
+</html>
